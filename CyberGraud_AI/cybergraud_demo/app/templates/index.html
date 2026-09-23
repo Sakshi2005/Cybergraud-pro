@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CyberGraud AI Security Lab</title><link rel="stylesheet" href="/static/style.css"><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div id="toast"></div>
+<div id="auth" class="auth-wrap"><div class="auth-card">
+  <div class="brand">CYBER<span>GRAUD</span> <small>AI SECURITY LAB</small></div>
+  <p class="muted">Safe cyber-attack simulation • AI threat detection • XAI • recommendations • reports</p>
+  <div class="tabs"><button onclick="showAuth('login')" id="loginTab">Login</button><button onclick="showAuth('register')" id="registerTab">Register</button></div>
+  <form id="loginForm" onsubmit="login(event)"><input id="loginEmail" type="email" placeholder="Email" required><input id="loginPassword" type="password" placeholder="Password" required><button class="primary">Sign in</button></form>
+  <form id="registerForm" class="hidden" onsubmit="register(event)"><input id="regName" placeholder="Full name" required><input id="regEmail" type="email" placeholder="Email" required><input id="regPassword" type="password" placeholder="Password (8+ chars)" minlength="8" required><select id="regRole"><option>Student</option><option>Website Owner</option></select><button class="primary">Create account</button></form>
+  <div id="authMsg" class="msg"></div><div class="demo"><b>Demo accounts</b><br>Admin: admin@cybergraud.local / Admin@123<br>Student: student@cybergraud.local / Student@123<br>Owner: owner@cybergraud.local / Owner@123</div>
+</div></div>
+
+<div id="app" class="hidden"><aside>
+  <div class="sidebrand">CYBERGRAUD <small>AI SECURITY LAB</small></div>
+  <button class="nav active" data-section="dashboard" onclick="section('dashboard')">◈ Dashboard</button>
+  <button class="nav" data-section="simulate" onclick="section('simulate')">⚔ Attack Simulation</button>
+  <button class="nav" data-section="analyzer" onclick="section('analyzer')">◉ Website Analyzer</button>
+  <button class="nav" data-section="events" onclick="section('events')">◫ Detection Logs</button>
+  <button class="nav" data-section="knowledge" onclick="section('knowledge')">▤ Knowledge Base</button>
+  <button id="adminNav" class="nav hidden" data-section="admin" onclick="section('admin')">⚙ Admin Center</button>
+  <button class="nav" data-section="profile" onclick="section('profile')">◎ Profile & Password</button>
+  <button class="nav logout" onclick="logout()">↪ Logout</button>
+</aside>
+<main><header><div><h1 id="pageTitle">Security Dashboard</h1><p id="welcome" class="muted"></p></div><div class="profile" id="profileTop"></div></header>
+
+<section id="dashboard" class="page"><div class="cards"><div class="card"><span>Total Events</span><b id="total">0</b></div><div class="card"><span>Malicious</span><b id="malicious">0</b></div><div class="card danger"><span>High Risk</span><b id="high">0</b></div><div class="card success"><span>Points</span><b id="points">0</b></div></div>
+<div class="badge-row" id="badges"></div><div class="grid2"><div class="panel"><h2>Attack Distribution</h2><canvas id="attackChart"></canvas></div><div class="panel"><h2>Threat Timeline</h2><canvas id="timelineChart"></canvas></div></div>
+<div class="grid2"><div class="panel"><h2>Recent Alerts</h2><div id="recent"></div></div><div class="panel"><h2>Threat Sources</h2><div id="threatMap"></div></div></div>
+<div class="panel"><div class="panel-head"><h2>Leaderboard</h2><span class="pill">Gamified Mode</span></div><div id="leaderboard"></div></div></section>
+
+<section id="simulate" class="page hidden"><div class="panel hero"><div class="panel-head"><div><h2>Safe Attack Simulation Lab</h2><p>Controlled synthetic scenarios only. No attack payload is sent to a real target.</p></div><span class="pill purple">Hacker / Defender</span></div><div class="simgrid"><button onclick="simulate('SQL Injection')">SQL Injection</button><button onclick="simulate('XSS')">Cross-Site Scripting</button><button onclick="simulate('Brute Force')">Brute Force</button><button onclick="simulate('DDoS')">DDoS</button><button onclick="simulate('Normal')">Normal Traffic</button></div></div><div id="result" class="hidden"></div></section>
+
+<section id="analyzer" class="page hidden"><div class="panel"><div class="panel-head"><div><h2>Website Security Analyzer</h2><p>Analyze supplied security telemetry/configuration using the same AI engine. This demo does not scan or exploit external websites.</p></div><span class="pill blue">Same AI Engine</span></div><div class="form-grid"><label>Website / Application Name<input id="aTarget" value="Demo Web Application"></label><label>Source / Environment<input id="aSource" value="Website Owner"></label><label>Request Rate<input id="fRequest" type="number" value="55" min="0"></label><label>Failed Logins<input id="fLogin" type="number" value="5" min="0"></label><label>Payload Anomaly <small>0–1</small><input id="fPayload" type="number" step="0.01" value="0.82" min="0" max="1"></label><label>Unique IPs<input id="fIPs" type="number" value="10" min="0"></label><label>Packet Rate<input id="fPackets" type="number" value="80" min="0"></label><label>Suspicious Headers<input id="fHeaders" type="number" value="7" min="0"></label></div><button class="primary wide" onclick="analyzeWebsite()">Run AI Security Analysis</button></div><div id="analysisResult" class="hidden"></div></section>
+
+<section id="events" class="page hidden"><div class="panel"><div class="panel-head"><h2>Detection Logs & Reports</h2><button class="secondary" onclick="downloadCSV()">Export CSV</button></div><div id="eventsTable"></div></div></section>
+<section id="knowledge" class="page hidden"><div class="panel"><div class="panel-head"><div><h2>Security Knowledge Base</h2><p>Attack signatures, descriptions and preventive controls.</p></div></div><div id="kb"></div></div></section>
+<section id="admin" class="page hidden"><div class="panel"><div class="panel-head"><div><h2>Admin Control Center</h2><p>Users, activity, knowledge base and ML model lifecycle.</p></div><button class="primary" onclick="retrainModel()">Retrain AI Model</button></div><div id="adminModel"></div><h3>Users & Roles</h3><div id="adminUsers"></div><h3>Knowledge Base Management</h3><div id="adminKB"></div><h3>Audit & Security Activity</h3><div id="adminAudit"></div></div></section>
+<section id="profile" class="page hidden"><div class="grid2"><div class="panel"><h2>My Profile</h2><div id="profileDetails"></div></div><div class="panel"><h2>Change Password</h2><form onsubmit="changePassword(event)"><input id="oldPass" type="password" placeholder="Current password" required><input id="newPass" type="password" minlength="8" placeholder="New password (8+ chars)" required><input id="newPass2" type="password" minlength="8" placeholder="Confirm new password" required><button class="primary">Change Password</button></form><div id="passMsg" class="msg"></div></div></div></section>
+</main></div><script src="/static/app.js"></script></body></html>
